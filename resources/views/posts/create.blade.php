@@ -22,6 +22,19 @@
     {{Form::text('title', '', ['class'=>'form-control','placeholder' =>'Title'])}}
     </div>
     <div class="form-group">
+    {{Form::label('slug','Slug')}}
+    {{Form::text('slug', '', ['class'=>'form-control','placeholder' =>'Slug'])}}
+    </div>
+    <div class="form-group">
+    {{Form::label('category', 'Category:')}}
+    <select name="category_id">
+    @foreach ($categories as $category)
+      <option value='{{$category->id}}'>{{$category->name}}</option>  
+    @endforeach
+    
+    </select>
+    </div>
+    <div class="form-group">
     {{Form::label('body','Body')}}
     {{Form::textarea('body', '', ['id'=>'editor','class'=>'form-control','placeholder' =>'Body'])}}
     </div>

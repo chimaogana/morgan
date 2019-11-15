@@ -10,7 +10,7 @@ class Post extends Model
 
 
     // protected $table =['posts'];
-    protected $fillable= [ 'title','body','image','user_id'
+    protected $fillable= [ 'title','body','image','category_id','user_id'
 
 ];
     
@@ -22,5 +22,8 @@ class Post extends Model
     public function comments()
     {
         return $this->hasmany('App\Comment');
+    }
+    public function category(){
+        return $this->belongsTo('App\category');
     }
 }

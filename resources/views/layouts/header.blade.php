@@ -68,6 +68,12 @@
 
                                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
                                     <a class="dropdown-item" href="/">Dashboard</a>
+                                                                        <a class="dropdown-item" href="{{route('categories.index')}}">Categories</a>
+
+                                    <a class="dropdown-item" href="profiles/profile">create Profile</a>
+                                       <a class="dropdown-item" href="">$user</a>
+
+
                                     <a class="dropdown-item" href="{{ route('logout') }}"
                                        onclick="event.preventDefault();
                                                      document.getElementById('logout-form').submit();">

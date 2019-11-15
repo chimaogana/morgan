@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Post;
 use App\User;
+use App\Category;
 
 class PostsController extends Controller
 {
@@ -32,7 +33,6 @@ class PostsController extends Controller
         $posts=Post::where('approved' ,'1', 'desc')
                     ->orderBy('created_at','desc')
                     ->paginate(3);
-
         
         return view('posts.index',compact('posts'));
     }
@@ -48,7 +48,8 @@ class PostsController extends Controller
         
         // $this->authorize('view', Post::class);
         // $post= Post::All();
-        return view('posts/create');
+        $categories =Category::all();
+        return view('posts/create')->withCategories($categories);
     }
 
     /**
@@ -63,6 +64,8 @@ class PostsController extends Controller
         $this->validate($request,[
             'title' => 'required',
             'body' => 'required',
+            'slug' => 'required|alpha_dash|min:5|max:255',
+            'category_id' => '',
             'image'=> 'image|nullable|max:1999']);
 if($request->hasFile('image')){
                 $filenameWithExt = $request->file('image')->getClientOriginalName();
@@ -74,8 +77,10 @@ if($request->hasFile('image')){
                         $fileNameToStore ='noimage.jpg';
                     }
         $post = new Post;
-        $post->title = $request->input('title');
-        $post->body = $request->input('body');
+        $post->title = $request->title;
+        $post->body = $request->body;
+        $post->slug = $request->slug;
+        $post->category_id = $request->category_id;
         $post->user_id = auth()->user()->id;
         
         $post->image = $fileNameToStore;
@@ -93,6 +98,7 @@ if($request->hasFile('image')){
     public function show($id)
     {
         $post=Post::find($id);
+        // $post->increament('view');
         return view('posts.show',compact('post'));
     }
 
@@ -107,7 +113,8 @@ if($request->hasFile('image')){
         
        
         $posts = Post::findOrFail($id);
-        return view('posts.edit', compact('posts'));
+        $categories = Category::all();
+        return view('posts.edit')->withPost($posts)->withCategories($categories);
     }
 
     /**
@@ -119,10 +126,21 @@ if($request->hasFile('image')){
      */
     public function update(Request $request, $id)
     {
+        $post = Post::find($id);
+        
+        if($request->input('slug')==$post->slug){
+            $this->validate($request,[
+                'title' => 'required',
+                'body' => 'required',
+                
+                 'image'=> 'image|nullable|max:1999']);
+        }else{
         $this->validate($request,[
             'title' => 'required',
-            'body' => 'required', 
-             'image'=> 'image|nullable|max:1999']);
+            'body' => 'required',
+            'slug' => 'required|alpha_dash|min:5|max:255|unique:posts,slug', 
+            'category_id' =>'required|integer',
+             'image'=> 'image|nullable|max:1999']);}
             if($request->hasFile('image')){
                             $filenameWithExt = $request->file('image')->getClientOriginalName();
                             $filename = pathinfo($filenameWithExt,PATHINFO_FILENAME);
@@ -135,6 +153,8 @@ if($request->hasFile('image')){
         $post = Post::find($id);
         $post->title = $request->input('title');
         $post->body = $request->input('body');
+        $post->slug = $request->input('slug');
+        $post->category_id = $request->input('category_id');
         if($request->hasFile('image')){
             $post->image =$fileNameToStore;
                     }

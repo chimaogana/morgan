@@ -13,16 +13,17 @@ class CommentsController extends Controller
     public function __construct(){
         $this->middleware('auth');
     }
-    public function Store(Request $request){
+    public function Store(Request $request,$post_id){
         $this->validate($request, [
             'body'=>'required'
             ]);
+            $post=Post::find($post_id);
+
             $comment = new Comment;
             $comment->body =$request->input('body');
-            $comment->user_id =auth()->user()->id;
-            $post=Post::find($request->post_id);
+            // $comment->user_id =auth()->user()->id;
             $comment->post_id =$post->id;
             $comment->save();
-        return redirect()->route('posts.show',$post->id);
+        return redirect()->route('blog.single',$post->slug);
     }
 }
