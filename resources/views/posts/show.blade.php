@@ -16,7 +16,10 @@
         <hr>
           <div class="clearfix">
         <a href="{{asset('/posts')}}" class="btn btn-default">Go Back</a>
+<p>{{$post->category->name}}</p>
 <h1>{{$post->title}}</h1>
+{{-- <h1><a href=""{{ url('blog/'.$post->slug)}}>{{url('blog/'.$post->slug)}}</a></h1> --}}
+
 <img style="width:50%" src="{{asset('/')}}storage/images/{{$post->image}}"><br>
 
 <div>
@@ -37,27 +40,9 @@
     {!! Form::submit('Delete', ['class'=>'btn btn-danger']) !!}
 {!! Form::close()!!}
 @endif @endif
-@if(Auth::check())
-{{-- @include('includes.errors') --}}
-{!! Form::open(['route'=>['comments.store'],'method'=> 'POST','class' =>'pull-left'])!!}
-     <div class="form-group">
-    {{Form::label('body','Body')}}
-    {{Form::textarea('body', '', ['id'=>'editor','class'=>'form-control','placeholder' =>'Comment'])}}
-    {{Form::hidden('post_id',$post->id)}}
-    </div>
-  <div>
-    {!! Form::submit('submit', ['class'=>'btn btn-success']) !!}
-{!! Form::close()!!}
-@endif
-@forelse ($post->comments as $comment)
-Comment:<p>{{ $comment->body}}<br>
-by:{{$comment->user->name}} <br> created on {{$comment->created_at->diffForHumans()}}</p>
 
-@empty
-<p>This post has no comments</p>
-@endforelse
-<span>{{$post->comments->count()}} </span>
-    
+{{-- @include('includes.errors') --}}
+
 
 
 

@@ -17,8 +17,11 @@ class CreatePostsTable extends Migration
             $table->bigIncrements('id');
             $table->string('title');
             $table->mediumText('body');
-            $table->string('image');
-            $table->integer('approved')->default(0);
+            $table->String('image');
+            $table->String('approved')->default('false');
+            $table->unsignedBigInteger('user_id')->nullable();
+            $table->index('user_id');
+
             $table->timestamps();
         });
     }
